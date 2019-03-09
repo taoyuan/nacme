@@ -3,3 +3,6 @@ lib/
 node_modules/
 npm-debug.log
 yarn-error.log
+.idea
+lib
+.nyc_*

@@ -1,4 +1,4 @@
-# acme-client [![CircleCI](https://circleci.com/gh/publishlab/node-acme-client.svg?style=svg)](https://circleci.com/gh/publishlab/node-acme-client)
+# nacme [![CircleCI](https://circleci.com/gh/taoyuan/nacme.svg?style=svg)](https://circleci.com/gh/taoyuan/nacme)
 
 *A simple and unopinionated ACME client.*
 
@@ -12,7 +12,7 @@ Information on how the Boulder/Let's Encrypt API diverges from the ACME spec:
 
 ### ACME compatibility
 
-| acme-client   | API       | Style     |
+| nacme   | API       | Style     |
 | ------------- | --------- | --------- |
 | v2.x          | ACMEv2    | Promise   |
 | v1.x          | ACMEv1    | callback  |
@@ -21,14 +21,14 @@ Information on how the Boulder/Let's Encrypt API diverges from the ACME spec:
 ## Installation
 
 ```bash
-$ npm install acme-client
+$ npm install nacme
 ```
 
 
 ## Usage
 
 ```js
-const acme = require('acme-client');
+const acme = require('nacme');
 
 const accountPrivateKey = '<PEM encoded private key>';
 
@@ -49,7 +49,7 @@ acme.directory.letsencrypt.production;
 
 ## Cryptography
 
-For key pair generation and Certificate Signing Requests, `acme-client` supports multiple interchangeable cryptographic engines.
+For key pair generation and Certificate Signing Requests, `nacme` supports multiple interchangeable cryptographic engines.
 
 
 ### `acme.forge` -- [docs/forge.md](docs/forge.md)
@@ -149,10 +149,10 @@ const order = await client.createOrder({
 
 ## Debugging
 
-`acme-client` uses [debug](https://www.npmjs.com/package/debug) for debugging which can be enabled by running
+`nacme` uses [debug](https://www.npmjs.com/package/debug) for debugging which can be enabled by running
 
 ```bash
-DEBUG=acme-client node index.js
+DEBUG=nacme node index.js
 ```
 
 
