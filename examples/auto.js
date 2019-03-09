@@ -91,7 +91,7 @@ async function challengeRemoveFn(authz, challenge, keyAuthorization) {
 
 module.exports = async function() {
   /* Init client */
-  const client = new acme.AcmeClient({
+  const client = new acme.Client({
     directoryUrl: acme.directory.letsencrypt.staging,
     accountKey: await acme.forge.createPrivateKey()
   });
