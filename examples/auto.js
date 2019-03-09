@@ -2,11 +2,11 @@
  * Example of acme.Client.auto()
  */
 
-const acme = require('./../');
+const acme = require("./../");
 
 
 function log(m) {
-    process.stdout.write(`${m}\n`);
+  process.stdout.write(`${m}\n`);
 }
 
 
@@ -20,31 +20,31 @@ function log(m) {
  */
 
 async function challengeCreateFn(authz, challenge, keyAuthorization) {
-    log('Triggered challengeCreateFn()');
+  log("Triggered challengeCreateFn()");
 
-    /* http-01 */
-    if (challenge.type === 'http-01') {
-        const filePath = `/var/www/html/.well-known/acme-challenges/${challenge.token}`;
-        const fileContents = keyAuthorization;
+  /* http-01 */
+  if (challenge.type === "http-01") {
+    const filePath = `/var/www/html/.well-known/acme-challenges/${challenge.token}`;
+    const fileContents = keyAuthorization;
 
-        log(`Creating challenge response for ${authz.identifier.value} at path: ${filePath}`);
+    log(`Creating challenge response for ${authz.identifier.value} at path: ${filePath}`);
 
-        /* Replace this */
-        log(`Would write "${fileContents}" to path "${filePath}"`);
-        // await fs.writeFile(filePath, fileContents);
-    }
+    /* Replace this */
+    log(`Would write "${fileContents}" to path "${filePath}"`);
+    // await fs.writeFile(filePath, fileContents);
+  }
 
-    /* dns-01 */
-    else if (challenge.type === 'dns-01') {
-        const dnsRecord = `_acme-challenge.${authz.identifier.value}`;
-        const recordValue = keyAuthorization;
+  /* dns-01 */
+  else if (challenge.type === "dns-01") {
+    const dnsRecord = `_acme-challenge.${authz.identifier.value}`;
+    const recordValue = keyAuthorization;
 
-        log(`Creating TXT record for ${authz.identifier.value}: ${dnsRecord}`);
+    log(`Creating TXT record for ${authz.identifier.value}: ${dnsRecord}`);
 
-        /* Replace this */
-        log(`Would create TXT record "${dnsRecord}" with value "${recordValue}"`);
-        // await cloudflare.createRecord(dnsRecord, 'TXT', recordValue);
-    }
+    /* Replace this */
+    log(`Would create TXT record "${dnsRecord}" with value "${recordValue}"`);
+    // await cloudflare.createRecord(dnsRecord, 'TXT', recordValue);
+  }
 }
 
 
@@ -58,30 +58,30 @@ async function challengeCreateFn(authz, challenge, keyAuthorization) {
  */
 
 async function challengeRemoveFn(authz, challenge, keyAuthorization) {
-    log('Triggered challengeRemoveFn()');
+  log("Triggered challengeRemoveFn()");
 
-    /* http-01 */
-    if (challenge.type === 'http-01') {
-        const filePath = `/var/www/html/.well-known/acme-challenges/${challenge.token}`;
+  /* http-01 */
+  if (challenge.type === "http-01") {
+    const filePath = `/var/www/html/.well-known/acme-challenges/${challenge.token}`;
 
-        log(`Removing challenge response for ${authz.identifier.value} at path: ${filePath}`);
+    log(`Removing challenge response for ${authz.identifier.value} at path: ${filePath}`);
 
-        /* Replace this */
-        log(`Would remove file on path "${filePath}"`);
-        // await fs.unlink(filePath);
-    }
+    /* Replace this */
+    log(`Would remove file on path "${filePath}"`);
+    // await fs.unlink(filePath);
+  }
 
-    /* dns-01 */
-    else if (challenge.type === 'dns-01') {
-        const dnsRecord = `_acme-challenge.${authz.identifier.value}`;
-        const recordValue = keyAuthorization;
+  /* dns-01 */
+  else if (challenge.type === "dns-01") {
+    const dnsRecord = `_acme-challenge.${authz.identifier.value}`;
+    const recordValue = keyAuthorization;
 
-        log(`Removing TXT record for ${authz.identifier.value}: ${dnsRecord}`);
+    log(`Removing TXT record for ${authz.identifier.value}: ${dnsRecord}`);
 
-        /* Replace this */
-        log(`Would remove TXT record "${dnsRecord}" with value "${recordValue}"`);
-        // await cloudflare.removeRecord(dnsRecord, 'TXT');
-    }
+    /* Replace this */
+    log(`Would remove TXT record "${dnsRecord}" with value "${recordValue}"`);
+    // await cloudflare.removeRecord(dnsRecord, 'TXT');
+  }
 }
 
 
@@ -90,28 +90,28 @@ async function challengeRemoveFn(authz, challenge, keyAuthorization) {
  */
 
 module.exports = async function() {
-    /* Init client */
-    const client = new acme.Client({
-        directoryUrl: acme.directory.letsencrypt.staging,
-        accountKey: await acme.forge.createPrivateKey()
-    });
+  /* Init client */
+  const client = new acme.Client({
+    directoryUrl: acme.directory.letsencrypt.staging,
+    accountKey: await acme.forge.createPrivateKey()
+  });
 
-    /* Create CSR */
-    const [key, csr] = await acme.forge.createCsr({
-        commonName: 'example.com'
-    });
+  /* Create CSR */
+  const [key, csr] = await acme.forge.createCsr({
+    commonName: "example.com"
+  });
 
-    /* Certificate */
-    const cert = await client.auto({
-        csr,
-        email: 'test@example.com',
-        termsOfServiceAgreed: true,
-        challengeCreateFn,
-        challengeRemoveFn
-    });
+  /* Certificate */
+  const cert = await client.auto({
+    csr,
+    email: "test@example.com",
+    termsOfServiceAgreed: true,
+    challengeCreateFn,
+    challengeRemoveFn
+  });
 
-    /* Done */
-    log(`CSR:\n${csr.toString()}`);
-    log(`Private key:\n${key.toString()}`);
-    log(`Certificate:\n${cert.toString()}`);
+  /* Done */
+  log(`CSR:\n${csr.toString()}`);
+  log(`Private key:\n${key.toString()}`);
+  log(`Certificate:\n${cert.toString()}`);
 };

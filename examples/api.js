@@ -2,12 +2,12 @@
  * Example of acme.Client API
  */
 
-const Promise = require('bluebird');
-const acme = require('./../');
+const Promise = require("bluebird");
+const acme = require("./../");
 
 
 function log(m) {
-    process.stdout.write(`${m}\n`);
+  process.stdout.write(`${m}\n`);
 }
 
 
@@ -21,10 +21,10 @@ function log(m) {
  */
 
 async function challengeCreateFn(authz, challenge, keyAuthorization) {
-    /* Do something here */
-    log(JSON.stringify(authz));
-    log(JSON.stringify(challenge));
-    log(keyAuthorization);
+  /* Do something here */
+  log(JSON.stringify(authz));
+  log(JSON.stringify(challenge));
+  log(keyAuthorization);
 }
 
 
@@ -37,10 +37,10 @@ async function challengeCreateFn(authz, challenge, keyAuthorization) {
  */
 
 async function challengeRemoveFn(authz, challenge, keyAuthorization) {
-    /* Do something here */
-    log(JSON.stringify(authz));
-    log(JSON.stringify(challenge));
-    log(keyAuthorization);
+  /* Do something here */
+  log(JSON.stringify(authz));
+  log(JSON.stringify(challenge));
+  log(keyAuthorization);
 }
 
 
@@ -49,74 +49,72 @@ async function challengeRemoveFn(authz, challenge, keyAuthorization) {
  */
 
 module.exports = async function() {
-    /* Init client */
-    const client = new acme.Client({
-        directoryUrl: acme.directory.letsencrypt.staging,
-        accountKey: await acme.forge.createPrivateKey()
-    });
+  /* Init client */
+  const client = new acme.Client({
+    directoryUrl: acme.directory.letsencrypt.staging,
+    accountKey: await acme.forge.createPrivateKey()
+  });
 
-    /* Register account */
-    await client.createAccount({
-        termsOfServiceAgreed: true,
-        contact: ['mailto:test@example.com']
-    });
+  /* Register account */
+  await client.createAccount({
+    termsOfServiceAgreed: true,
+    contact: ["mailto:test@example.com"]
+  });
 
-    /* Place new order */
-    const order = await client.createOrder({
-        identifiers: [
-            { type: 'dns', value: 'example.com' },
-            { type: 'dns', value: '*.example.com' }
-        ]
-    });
+  /* Place new order */
+  const order = await client.createOrder({
+    identifiers: [
+      { type: "dns", value: "example.com" },
+      { type: "dns", value: "*.example.com" }
+    ]
+  });
 
-    /* Get authorizations and select challenges */
-    const authorizations = await client.getAuthorizations(order);
+  /* Get authorizations and select challenges */
+  const authorizations = await client.getAuthorizations(order);
 
-    const promises = authorizations.map(async (authz) => {
-        const challenge = authz.challenges.pop();
-        const keyAuthorization = await client.getChallengeKeyAuthorization(challenge);
+  const promises = authorizations.map(async (authz) => {
+    const challenge = authz.challenges.pop();
+    const keyAuthorization = await client.getChallengeKeyAuthorization(challenge);
 
-        try {
-            /* Satisfy challenge */
-            await challengeCreateFn(authz, challenge, keyAuthorization);
+    try {
+      /* Satisfy challenge */
+      await challengeCreateFn(authz, challenge, keyAuthorization);
 
-            /* Verify that challenge is satisfied */
-            await client.verifyChallenge(authz, challenge);
+      /* Verify that challenge is satisfied */
+      await client.verifyChallenge(authz, challenge);
 
-            /* Notify ACME provider that challenge is satisfied */
-            await client.completeChallenge(challenge);
+      /* Notify ACME provider that challenge is satisfied */
+      await client.completeChallenge(challenge);
 
-            /* Wait for ACME provider to respond with valid status */
-            await client.waitForValidStatus(challenge);
-        }
-        finally {
-            /* Clean up challenge response */
-            try {
-                await challengeRemoveFn(authz, challenge, keyAuthorization);
-            }
-            catch (e) {
-                /**
-                 * Catch errors thrown by challengeRemoveFn() so the order can
-                 * be finalized, even though something went wrong during cleanup
-                 */
-            }
-        }
-    });
+      /* Wait for ACME provider to respond with valid status */
+      await client.waitForValidStatus(challenge);
+    } finally {
+      /* Clean up challenge response */
+      try {
+        await challengeRemoveFn(authz, challenge, keyAuthorization);
+      } catch (e) {
+        /**
+         * Catch errors thrown by challengeRemoveFn() so the order can
+         * be finalized, even though something went wrong during cleanup
+         */
+      }
+    }
+  });
 
-    /* Wait for challenges to complete */
-    await Promise.all(promises);
+  /* Wait for challenges to complete */
+  await Promise.all(promises);
 
-    /* Finalize order */
-    const [key, csr] = await acme.forge.createCsr({
-        commonName: '*.example.com',
-        altNames: ['example.com']
-    });
+  /* Finalize order */
+  const [key, csr] = await acme.forge.createCsr({
+    commonName: "*.example.com",
+    altNames: ["example.com"]
+  });
 
-    await client.finalizeOrder(order, csr);
-    const cert = await client.getCertificate(order);
+  await client.finalizeOrder(order, csr);
+  const cert = await client.getCertificate(order);
 
-    /* Done */
-    log(`CSR:\n${csr.toString()}`);
-    log(`Private key:\n${key.toString()}`);
-    log(`Certificate:\n${cert.toString()}`);
+  /* Done */
+  log(`CSR:\n${csr.toString()}`);
+  log(`Private key:\n${key.toString()}`);
+  log(`Certificate:\n${cert.toString()}`);
 };
