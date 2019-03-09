@@ -11,7 +11,7 @@ import { AcmeApi } from "./api";
 import verify = require("./verify");
 import helper = require("./helper");
 import { auto } from "./auto";
-import { AcmeAuthorization, AcmeChallenge, AcmeOrder } from "./types";
+import { AcmeAuthorization, AcmeChallenge, AcmeIdentifier, AcmeOrder } from "./types";
 
 const debug = require("debug")("nacme");
 
@@ -39,6 +39,17 @@ export interface BackoffOpts {
   attempts: number;
   min: number;
   max: number;
+}
+
+export interface AccountOptions {
+  termsOfServiceAgreed?: boolean;
+  contact?: string[];
+  [name: string]: any;
+}
+
+export interface OrderOptions {
+  identifiers: AcmeIdentifier[];
+  [name: string]: any;
 }
 
 /**
@@ -124,7 +135,8 @@ export class Client {
    * @returns {Promise<object>} Account
    */
 
-  async createAccount(data = {}) {
+  async createAccount(data?: AccountOptions) {
+    data = data || {};
     try {
       this.getAccountUrl();
 
@@ -154,7 +166,8 @@ export class Client {
    * @returns {Promise<object>} Account
    */
 
-  async updateAccount(data = {}) {
+  async updateAccount(data?: AccountOptions) {
+    data = data || {};
     try {
       this.api.getAccountUrl();
     } catch (e) {
@@ -220,7 +233,7 @@ export class Client {
    * @returns {Promise<AcmeOrder>} Order
    */
 
-  async createOrder(data): Promise<AcmeOrder> {
+  async createOrder(data: OrderOptions): Promise<AcmeOrder> {
     const resp = await this.api.createOrder(data);
 
     if (!resp.headers.location) {

@@ -2,7 +2,7 @@
  * Example of acme.Client.auto()
  */
 
-const acme = require("./../");
+const acme = require("../");
 
 
 function log(m) {
@@ -91,7 +91,7 @@ async function challengeRemoveFn(authz, challenge, keyAuthorization) {
 
 module.exports = async function() {
   /* Init client */
-  const client = new acme.Client({
+  const client = new acme.AcmeClient({
     directoryUrl: acme.directory.letsencrypt.staging,
     accountKey: await acme.forge.createPrivateKey()
   });
