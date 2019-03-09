@@ -12,13 +12,16 @@ import { Jwk } from "./types";
 const debug = require("debug")("nacme");
 const pkg = require("../package.json");
 
-const userAgentString = `node-${pkg.name}/${pkg.version} (${os.type()} ${os.release()})`;
-
+const DEFAULT_USERAGENT = `node-${pkg.name}/${pkg.version} (${os.type()} ${os.release()})`;
 
 export interface SingedBody {
   payload: string;
   protected: string;
   signature: string;
+}
+
+export interface HttpClientOptions {
+  useragent?: string;
 }
 
 
@@ -33,12 +36,16 @@ export interface SingedBody {
 export class HttpClient {
   directoryUrl: string;
   accountKey: Buffer;
+  useragent: string;
+
   directory: string[];
   jwk?: Jwk;
 
-  constructor(directoryUrl: string, accountKey: Buffer) {
+  constructor(directoryUrl: string, accountKey: Buffer, opts?: HttpClientOptions) {
+    opts = opts || {};
     this.directoryUrl = directoryUrl;
     this.accountKey = accountKey;
+    this.useragent = opts.useragent || DEFAULT_USERAGENT;
   }
 
 
@@ -62,7 +69,7 @@ export class HttpClient {
     }
 
     opts.headers["Content-Type"] = "application/jose+json";
-    opts.headers["User-Agent"] = userAgentString;
+    opts.headers["User-Agent"] = this.useragent;
 
     debug(`HTTP request: ${method} ${url}`);
     const resp = await axios.request(opts);

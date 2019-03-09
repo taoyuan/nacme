@@ -6,7 +6,7 @@
 
 import crypto = require("crypto");
 import PromiseA = require("bluebird");
-import { HttpClient } from "./http";
+import { HttpClient, HttpClientOptions } from "./http";
 import { AcmeApi } from "./api";
 import verify = require("./verify");
 import helper = require("./helper");
@@ -23,6 +23,7 @@ export interface ClientOptions {
   backoffAttempts?: number;
   backoffMin?: number;
   backoffMax?: number;
+  http?: HttpClientOptions;
 }
 
 export interface ClientSettings {
@@ -87,7 +88,7 @@ export class Client {
       max: this.opts.backoffMax
     };
 
-    this.http = new HttpClient(this.opts.directoryUrl, this.opts.accountKey);
+    this.http = new HttpClient(this.opts.directoryUrl, this.opts.accountKey, opts.http);
     this.api = new AcmeApi(this.http, this.opts.accountUrl);
   }
 
