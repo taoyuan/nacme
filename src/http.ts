@@ -12,7 +12,7 @@ import { Jwk } from "./types";
 const debug = require("debug")("nacme");
 const pkg = require("../package.json");
 
-const DEFAULT_USERAGENT = `node-${pkg.name}/${pkg.version} (${os.type()} ${os.release()})`;
+const DEFAULT_USERAGENT = `${pkg.name}/${pkg.version} (${os.type()} ${os.release()})`;
 
 export interface SingedBody {
   payload: string;
