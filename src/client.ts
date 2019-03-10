@@ -11,7 +11,7 @@ import { AcmeApi } from "./api";
 import verify = require("./verify");
 import helper = require("./helper");
 import { auto } from "./auto";
-import { AcmeAuthorization, AcmeChallenge, AcmeIdentifier, AcmeOrder } from "./types";
+import { AcmeAccount, AcmeAuthorization, AcmeChallenge, AcmeIdentifier, AcmeOrder } from "./types";
 
 const debug = require("debug")("nacme");
 
@@ -44,6 +44,7 @@ export interface BackoffOpts {
 export interface AccountOptions {
   termsOfServiceAgreed?: boolean;
   contact?: string[];
+  onlyReturnExisting?: boolean;
   [name: string]: any;
 }
 
@@ -131,11 +132,11 @@ export class Client {
    *
    * https://github.com/ietf-wg-acme/acme/blob/master/draft-ietf-acme-acme.md#account-creation
    *
-   * @param {object} [data] Request data
+   * @param {AccountOptions} [data] Request data
    * @returns {Promise<object>} Account
    */
 
-  async createAccount(data?: AccountOptions) {
+  async createAccount(data?: AccountOptions): Promise<AcmeAccount> {
     data = data || {};
     try {
       this.getAccountUrl();
@@ -156,6 +157,16 @@ export class Client {
     }
   }
 
+  /**
+   * Retrieve a existing account using accountKey
+   *
+   * https://github.com/letsencrypt/boulder/issues/3281
+   *
+   * @returns {Promise<object>} Account
+   */
+  async retrieveAccount(): Promise<AcmeAccount> {
+    return this.createAccount({onlyReturnExisting: true});
+  }
 
   /**
    * Update existing account

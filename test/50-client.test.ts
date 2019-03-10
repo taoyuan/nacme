@@ -59,7 +59,8 @@ describe("client", function() {
     before(async () => {
       testSecondaryPrivateKey = await forge.createPrivateKey();
       testAccount = await testClient.createAccount({
-        termsOfServiceAgreed: true
+        termsOfServiceAgreed: true,
+        contact: ["mailto:nacme@outlook.com"]
       });
     });
 
@@ -117,19 +118,30 @@ describe("client", function() {
       assert.strictEqual(testAccount.id, account.id);
     });
 
+    it("should retrieve account using private key", async () => {
+      const client = new Client({
+        directoryUrl: directory.letsencrypt.staging,
+        accountKey: testPrivateKey,
+      });
+
+      const account = await client.retrieveAccount();
+      assert.isObject(account);
+      assert.strictEqual(account.status, "valid");
+      assert.strictEqual(testAccount.id, account.id);
+      assert.sameMembers(testAccount.contact, account.contact);
+    });
 
     /**
      * Update account contact info
      */
-
     it("should update account contact info", async () => {
       const account = await testClient.updateAccount({});
 
       assert.isObject(account);
       assert.strictEqual(account.status, "valid");
       assert.strictEqual(testAccount.id, account.id);
+      assert.sameMembers(testAccount.contact, account.contact);
     });
-
 
     /**
      * Change account private key
