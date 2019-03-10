@@ -12,15 +12,11 @@ commands:
       - run: npm test
 
 jobs:
-  node-v8: { docker: [{ image: circleci/node:8 }], steps: [ test ]}
-  node-v9: { docker: [{ image: circleci/node:9 }], steps: [ test ]}
   node-v10: { docker: [{ image: circleci/node:10 }], steps: [ test ]}
   node-v11: { docker: [{ image: circleci/node:11 }], steps: [ test ]}
 
 workflows:
   test-suite:
     jobs:
-      - node-v8
-      - node-v9
       - node-v10
       - node-v11
