@@ -11,7 +11,13 @@ import { AcmeApi } from "./api";
 import verify = require("./verify");
 import helper = require("./helper");
 import { auto } from "./auto";
-import { AcmeAccount, AcmeAuthorization, AcmeChallenge, AcmeIdentifier, AcmeOrder } from "./types";
+import {
+  AcmeAccount,
+  AcmeAuthorization,
+  AcmeChallenge,
+  AcmeIdentifier,
+  AcmeOrder,
+} from "./types";
 
 const debug = require("debug")("nacme");
 
@@ -264,10 +270,10 @@ export class Client {
    *
    * @param {object} order Order object
    * @param {buffer|string} csr PEM encoded Certificate Signing Request
-   * @returns {Promise<object>} Order
+   * @returns {Promise<AcmeOrder>} Order
    */
 
-  async finalizeOrder(order, csr) {
+  async finalizeOrder(order, csr): Promise<AcmeOrder> {
     if (!order.finalize) {
       throw new Error("Unable to finalize order, URL not found");
     }
@@ -465,10 +471,13 @@ export class Client {
       throw new Error("Unable to download certificate, URL not found");
     }
 
-    const resp = await this.http.request(order.certificate, "get", { responseType: "text" });
-    return resp.data;
+    return this.getCertificateByUrl(order.certificate);
   }
 
+  async getCertificateByUrl(url: string) {
+    const resp = await this.http.request(url, "get", { responseType: "text" });
+    return resp.data;
+  }
 
   /**
    * Revoke certificate

@@ -49,14 +49,14 @@ export interface AcmeAccount {
 }
 
 export interface AcmeOrder {
-  url: string;
   status: string;
+  certificate: string;
+  url: string;
   expires: string;
   identifiers: AcmeIdentifier[];
   notBefore: string;
   notAfter: string;
   authorizations: string[];
   finalize: string;
-  certificate: string;
   error?: any;
 }
