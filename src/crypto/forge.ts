@@ -9,7 +9,7 @@ import net = require("net");
 import PromiseA = require("bluebird");
 import forge = require("node-forge");
 import { pki } from "node-forge";
-import { DomainNames } from "../types";
+import { CertificateInfo, DomainNames } from "../types";
 
 let nativeGenKeyPair;
 const forgeGenKeyPair = PromiseA.promisify(forge.pki.rsa.generateKeyPair);
@@ -197,7 +197,7 @@ export async function readCsrDomains(csr) {
  * @returns {Promise<object>} Certificate info
  */
 
-export async function readCertificateInfo(cert) {
+export async function readCertificateInfo(cert): Promise<CertificateInfo> {
   if (!Buffer.isBuffer(cert)) {
     cert = Buffer.from(cert);
   }
@@ -215,6 +215,8 @@ export interface CsrSubject {
   shortName: string;
   value: string;
 }
+
+
 
 /**
  * Create array of short names and values for Certificate Signing Request subjects

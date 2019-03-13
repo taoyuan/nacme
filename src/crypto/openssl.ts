@@ -293,7 +293,6 @@ export interface CsrSubjectOptions {
   emailAddress?: string;
 }
 
-
 /**
  * Create Certificate Signing Request subject
  *
