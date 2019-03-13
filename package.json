@@ -2,7 +2,7 @@
   "name": "nacme",
   "description": "Simple and unopinionated ACME client",
   "author": "nmorsman",
-  "version": "2.3.5",
+  "version": "2.3.6",
   "files": [
     "lib"
   ],
