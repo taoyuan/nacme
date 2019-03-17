@@ -59,6 +59,11 @@ export interface OrderOptions {
   [name: string]: any;
 }
 
+export interface RevokeOptions {
+  reason?: string;
+  [name: string]: any;
+}
+
 /**
  * Default options
  */
@@ -485,16 +490,16 @@ export class Client {
    * https://github.com/ietf-wg-acme/acme/blob/master/draft-ietf-acme-acme.md#certificate-revocation
    *
    * @param {buffer|string} cert PEM encoded certificate
-   * @param {object} [data] Additional request data
+   * @param {RevokeOptions} [opts] Additional request options
    * @returns {Promise}
    */
 
-  async revokeCertificate(cert: string | Buffer, data?: { [name: string]: any }) {
+  async revokeCertificate(cert: string | Buffer, opts?: RevokeOptions) {
     const body = helper.getPemBody(cert);
-    data = data || {};
-    data.certificate = helper.b64escape(body);
+    opts = opts || {};
+    opts.certificate = helper.b64escape(body);
 
-    const resp = await this.api.revokeCert(data);
+    const resp = await this.api.revokeCert(opts);
     return resp.data;
   }
 

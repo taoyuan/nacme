@@ -139,8 +139,8 @@ export async function createPrivateKey(size = 2048) {
  * @returns {Promise<buffer>} Public RSA key
  */
 
-export async function createPublicKey(key): Promise<Buffer> {
-  const privateKey = <pki.rsa.PrivateKey>forge.pki.privateKeyFromPem(key);
+export async function createPublicKey(key: string | Buffer): Promise<Buffer> {
+  const privateKey = <pki.rsa.PrivateKey>forge.pki.privateKeyFromPem(key.toString());
   const publicKey = forge.pki.rsa.setPublicKey(privateKey.n, privateKey.e);
   const pemKey = forge.pki.publicKeyToPem(publicKey);
   return Buffer.from(pemKey);
